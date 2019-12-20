@@ -1,5 +1,6 @@
 package com.molina.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.Document;
@@ -18,6 +19,13 @@ public class UserDao extends MongoDbDao {
 	
 	public void insertUser(List<Document> document) {
 		getCollection().insertMany(document);
+	}
+	
+	public void getNextId() {
+		List<Document> pipeline = new ArrayList<Document>();
+//		pipeline.add(new Document(Group))
+		//db.user_collection.aggregate({$group:{_id:null, max:{$max:"$_id"}}})
+		getCollection().aggregate(pipeline);
 	}
 	
 	public void getUsers(Document filter) {
