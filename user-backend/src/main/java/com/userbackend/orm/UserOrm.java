@@ -11,11 +11,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserOrm {
 	public static final String TABLENAME = "TBL_USER";
-	private int userid;
+	private Integer userid;
 	private String username;
 	private String userlast_name;
 	private String userlogin;
 	private String userpassword;
 	private Date usercreation;
 	private String useremail;
+	private String userestado;
 }

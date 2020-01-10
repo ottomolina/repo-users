@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -40,8 +41,8 @@ public class GeneralSqlDao {
 		}
 	}
 	
-	protected Object selectOneColumn(Connection conn, String sql) throws SQLException {
-		return null;
+	protected <T> T selectOneColumn(Connection conn, String sql, Class<T> type) throws SQLException {
+		return qr.query(conn, sql, new BeanHandler<>(type));
 	}
 	
 }
