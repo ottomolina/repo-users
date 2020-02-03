@@ -7,8 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
-@Data
 @NoArgsConstructor
+@Data
 public class UserOrm {
 	public static final String TABLENAME = "TBL_USER";
 	private Integer userid;

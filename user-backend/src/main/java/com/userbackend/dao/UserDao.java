@@ -33,31 +33,31 @@ public class UserDao extends GeneralSqlDao {
 		if(filter != null) {
 			List<Object> p = new ArrayList<Object>();
 			String where = "";
-			if(filter.getUserid() == null) {
+			if(filter.getUserid() != null) {
 				where = where + " userid=? and";
 				p.add(filter.getUserid());
 			}
-			if(filter.getUsername() == null) {
+			if(filter.getUsername() != null) {
 				where = where + " username=? and";
 				p.add(filter.getUsername());
 			}
-			if(filter.getUserlast_name() == null) {
+			if(filter.getUserlast_name() != null) {
 				where = where + " userlast_name=? and";
 				p.add(filter.getUserlast_name());
 			}
-			if(filter.getUserlogin() == null) {
+			if(filter.getUserlogin() != null) {
 				where = where + " userlogin=? and";
 				p.add(filter.getUserlogin());
 			}
-			if(filter.getUserpassword() == null) {
+			if(filter.getUserpassword() != null) {
 				where = where + " userpassword=? and";
 				p.add(filter.getUserpassword());
 			}
-			if(filter.getUseremail() == null) {
-				where = where + " useremail=?    ";
+			if(filter.getUseremail() != null) {
+				where = where + " useremail=? and";
 				p.add(filter.getUseremail());
 			}
-			if(filter.getUserestado() == null) {
+			if(filter.getUserestado() != null) {
 				where = where + " usereestado=?    ";
 				p.add(filter.getUserestado());
 			}
@@ -74,27 +74,27 @@ public class UserDao extends GeneralSqlDao {
 		String sql = "update " + UserOrm.TABLENAME;
 		String set = "";
 		List<Object> params = new ArrayList<Object>();
-		if(user.getUsername() == null) {
+		if(user.getUsername() != null) {
 			set = set + " username=?,";
 			params.add(user.getUsername());
 		}
-		if(user.getUserlast_name() == null) {
+		if(user.getUserlast_name() != null) {
 			set = set + " userlast_name=?,";
 			params.add(user.getUserlast_name());
 		}
-		if(user.getUserlogin() == null) {
+		if(user.getUserlogin() != null) {
 			set = set + " userlogin=?,";
 			params.add(user.getUserlogin());
 		}
-		if(user.getUserpassword() == null) {
+		if(user.getUserpassword() != null) {
 			set = set + " userpassword=?,";
 			params.add(user.getUserpassword());
 		}
-		if(user.getUseremail() == null) {
+		if(user.getUseremail() != null) {
 			set = set + " useremail=?,";
 			params.add(user.getUseremail());
 		}
-		if(user.getUserestado() == null) {
+		if(user.getUserestado() != null) {
 			set = set + " userestado=?,";
 			params.add(user.getUserestado());
 		}
