@@ -1,0 +1,107 @@
+package com.gsa.ctrl;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.gsa.dao.PermisoDao;
+import com.gsa.data.RequestData;
+import com.gsa.data.ResponseData;
+import com.gsa.orm.GsaPermiso;
+import com.gsa.orm.GsaOrms.GsaEstado;
+import com.gsa.util.Util;
+
+public class PermisoServiceCtrl extends ServiceCtrl {
+	private ResponseData responseData;
+	@Autowired
+	private PermisoDao dao;
+	
+	public ResponseData getInfoPermiso(RequestData input) {
+		responseData = new ResponseData();
+		GsaPermiso orm = null;
+		Connection conn = null;
+		List<GsaPermiso> listPermiso = new ArrayList<GsaPermiso>();
+		try {
+			conn = getConnection();
+			listPermiso = dao.select(conn, orm);
+			responseData.setResult(Util.OK);
+			responseData.setData(listPermiso);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			setSQLExceptionToResponse(responseData, e);
+		} finally {
+			closeConnection(conn);
+		}
+		return responseData;
+	}
+	
+	public ResponseData savePermiso(RequestData input) {
+		responseData = new ResponseData();
+		if(!Util.isRequestValid(responseData, input, this)) {
+			return responseData;
+		}
+		GsaPermiso orm = convertData(input.getData(), GsaPermiso.class);
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			conn.setAutoCommit(false);
+			if(dao.isDuplicate(conn, orm)) {
+				setErrorToResponse(responseData, 101, "El registro que intenta guardar ya existe");
+			} else {
+				Integer v_gsaPermisoId = Integer.parseInt(
+						String.valueOf(dao.getNextId(conn, orm)));
+				orm.setGsa_per_id(v_gsaPermisoId);
+				Integer v_result = dao.insert(conn, orm);
+				if(v_result == 1) {
+					responseData.setResult(Util.OK);
+				} else {
+					setErrorToResponse(responseData, 102, "Ocurrió un error al guardar el registro");
+				}
+				connectionCommit(conn);
+			}
+		} catch(SQLException e) {
+			e.printStackTrace();
+			connectionRollback(conn);
+			setSQLExceptionToResponse(responseData, e);
+		} finally {
+			closeConnection(conn);
+		}
+		return responseData;
+	}
+	
+	public ResponseData updatePermiso(RequestData input) {
+		responseData = new ResponseData();
+		if(!Util.isRequestValid(responseData, input, this)) {
+			return responseData;
+		}
+		GsaPermiso orm = convertData(input.getData(), GsaPermiso.class);
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			conn.setAutoCommit(false);
+			
+			if(dao.isDuplicate(conn, orm)) {
+				setErrorToResponse(responseData, 101, "El registro que intenta guardar ya existe.");
+			} else {
+				Integer v_result = dao.update(conn, orm);
+				if(v_result == 1) {
+					responseData.setResult(Util.OK);
+				} else {
+					setErrorToResponse(responseData, 102, "Ocurrió un error al guardar el registro");
+				}
+				connectionCommit(conn);
+			}
+		} catch(SQLException e) {
+			e.printStackTrace();
+			connectionRollback(conn);
+			setSQLExceptionToResponse(responseData, e);
+		} finally {
+			closeConnection(conn);
+		}
+		return responseData;
+	}
+	
+}

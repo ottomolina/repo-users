@@ -1,0 +1,40 @@
+package com.gsa.ctrl;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.gsa.dao.PermisoDao;
+import com.gsa.data.RequestData;
+import com.gsa.data.ResponseData;
+import com.gsa.orm.GsaPermiso;
+import com.gsa.util.Util;
+
+public class PermisoServiceCtrl extends ServiceCtrl {
+	private ResponseData responseData;
+	@Autowired
+	private PermisoDao dao;
+	
+	public ResponseData getInfoPermiso(RequestData input) {
+		responseData = new ResponseData();
+		GsaPermiso orm = null;
+		Connection conn = null;
+		List<GsaPermiso> listPermiso = new ArrayList<GsaPermiso>();
+		try {
+			conn = getConnection();
+			listPermiso = dao.select(conn, orm);
+			responseData.setResult(Util.OK);
+			responseData.setData(listPermiso);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			setSQLExceptionToResponse(responseData, e);
+		} finally {
+			closeConnection(conn);
+		}
+		return responseData;
+	}
+	
+}

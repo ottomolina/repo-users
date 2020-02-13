@@ -1,0 +1,42 @@
+package com.gsa.ctrl;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import com.gsa.dao.GeneralDao;
+
+public class BaseCtrl {
+	@Autowired
+	private JdbcTemplate jdbc;
+	
+	protected Connection getConnection() throws SQLException {
+		Connection conn = null;
+		try {
+			conn = jdbc.getDataSource().getConnection();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SQLException("Ocurrió un error al obtener la conexion a base de datos");
+		}
+		return conn;
+	}
+	
+	protected void closeConnection(Connection conn) {
+		GeneralDao.closeConnection(conn);
+	}
+	
+	protected void connectionCommit(Connection conn) throws SQLException {
+		if(!conn.getAutoCommit()) {
+			conn.commit();
+		}
+	}
+	
+	protected void connectionRollback(Connection conn) throws SQLException {
+		if(!conn.getAutoCommit()) {
+			conn.rollback();
+		}
+	}
+	
+}

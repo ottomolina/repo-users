@@ -1,0 +1,42 @@
+package com.gsa.ctrl;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.gsa.dao.EstadoDao;
+import com.gsa.data.RequestData;
+import com.gsa.data.ResponseData;
+import com.gsa.orm.GsaOrms.GsaEstado;
+
+public class EstadoServiceCtrl extends BaseCtrl {
+	private ResponseData responseData;
+	@Autowired
+	private EstadoDao dao;
+	
+	public ResponseData getInfoEstado(RequestData input) {
+		responseData = new ResponseData();
+		GsaEstado orm = null;
+		Connection conn = null;
+		List<GsaEstado> listEstado = new ArrayList<GsaEstado>();
+		try {
+			conn = getConnection();
+			listEstado = dao.select(conn, orm);
+			responseData.setData(listEstado);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			setSQLExceptionToResponse(responseData, e);
+		} finally {
+			closeConnection(conn);
+		}
+		return responseData;
+	}
+	
+	public ResponseData saveEstado(RequestData input) {
+		
+	}
+	
+}

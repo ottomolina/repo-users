@@ -1,0 +1,7 @@
+package com.gsu.interfaces;
+
+public interface Service {
+	
+	
+	
+}

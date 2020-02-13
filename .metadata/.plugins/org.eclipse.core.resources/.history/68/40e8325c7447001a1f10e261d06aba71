@@ -1,0 +1,15 @@
+package com.gsa;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class GsaBackendApplicationTests {
+
+	@Test
+	void contextLoads() {
+		assertThat(dataSource.getClass().getName())
+        .isEqualTo("org.apache.tomcat.jdbc.pool.DataSource");
+	}
+
+}

@@ -1,0 +1,18 @@
+package com.gsa.interfaces;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+
+public interface IDao {
+	
+	public Integer getNextId(Connection conn) throws SQLException;
+	
+	public boolean isDuplicate(Connection conn, Object orm) throws SQLException;
+	
+	public Integer insert(Connection conn, Object orm) throws SQLException;
+	
+	public Integer update(Connection conn, Object orm) throws SQLException;
+	
+	public Integer delete(Connection conn, Object orm) throws SQLException;
+	
+}
