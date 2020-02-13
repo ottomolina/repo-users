@@ -1,7 +1,0 @@
-INDEX VERSION 1.4+C:\proyectos-training\workspace-demo\repo-users\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
-3698155922.index
-3395784672.index
-500668589.index
-114694628.index
-765378000.index
-2284823992.index
