@@ -1,0 +1,139 @@
+package com.gsa.ctrl;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.gsa.dao.TablaDao;
+import com.gsa.data.RequestData;
+import com.gsa.data.ResponseData;
+import com.gsa.data.ResponseData.Error;
+import com.gsa.orm.GsaOrms.GsaTabla;
+import com.gsa.util.Util;
+
+@Component
+public class TablaServiceCtrl extends BaseCtrl {
+	private ResponseData responseData;
+	@Autowired
+	private TablaDao dao;
+	
+	public ResponseData getListTabla(RequestData input) {
+		responseData = new ResponseData();
+		GsaTabla orm = null;
+		Connection conn = null;
+		List<GsaTabla> listTabla = new ArrayList<GsaTabla>();
+		try {
+			conn = getConnection();
+			listTabla = dao.select(conn, orm);
+			responseData.setData(listTabla);
+		} catch(SQLException e) {
+			e.printStackTrace();
+			setSQLExceptionToResponse(responseData, e);
+		} finally {
+			closeConnection(conn);
+		}
+		return responseData;
+	}
+	
+	public ResponseData saveTabla(RequestData input) {
+		responseData = new ResponseData();
+		if(!Util.isRequestValid(responseData, input, this)) {
+			return responseData;
+		}
+		GsaTabla orm = convertData(input.getData(), GsaTabla.class);
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			conn.setAutoCommit(false);
+			if(dao.isDuplicate(conn, new GsaTabla(null, orm.getGsa_tab_nombre()))) {
+				setErrorToResponse(responseData, 101, "El registro que intenta guardar ya existe.");
+			} else {
+				
+				Integer v_gsaTablaId = Integer.parseInt(String.valueOf(dao.getNextId(conn)));
+				orm.setGsa_tab_id(v_gsaTablaId);
+				Integer v_result = dao.insert(conn, orm);
+				if(v_result == 1) {
+					responseData.setResult(Util.OK);
+				} else {
+					setErrorToResponse(responseData, 102, "Ocurrió un error al guardar el registro");
+				}
+				connectionCommit(conn);
+			}
+		} catch(SQLException e) {
+			e.printStackTrace();
+			connectionRollback(conn);
+			setSQLExceptionToResponse(responseData, e);
+		} finally {
+			closeConnection(conn);
+		}
+		return responseData;
+	}
+	
+	public ResponseData updateTabla(RequestData input) {
+		responseData = new ResponseData();
+		if(!Util.isRequestValid(responseData, input, this)) {
+			return responseData;
+		}
+		GsaTabla orm = convertData(input.getData(), GsaTabla.class);
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			conn.setAutoCommit(false);
+			
+			if(dao.isDuplicate(conn, orm)) {
+				setErrorToResponse(responseData, 101, "El registro que intenta guardar ya existe.");
+			} else {
+				Integer v_result = dao.update(conn, orm);
+				if(v_result == 1) {
+					responseData.setResult(Util.OK);
+				} else {
+					setErrorToResponse(responseData, 102, "Ocurrió un error al guardar el registro");
+				}
+				connectionCommit(conn);
+			}
+		} catch(SQLException e) {
+			e.printStackTrace();
+			connectionRollback(conn);
+			setSQLExceptionToResponse(responseData, e);
+		} finally {
+			closeConnection(conn);
+		}
+		return responseData;
+	}
+	
+	public ResponseData deleteTabla(RequestData input) {
+		responseData = new ResponseData();
+		if(!Util.isRequestValid(responseData, input, this)) {
+			return responseData;
+		}
+		GsaTabla orm = convertData(input.getData(), GsaTabla.class);
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			conn.setAutoCommit(false);
+			if(dao.validIntegrity(conn, orm) > 0) {
+				setErrorToResponse(responseData, 101, "El registro no puede ser eliminado, existen referencias.");
+			} else {
+				Integer v_result = dao.delete(conn, orm);
+				if(v_result == 1) {
+					responseData.setResult(Util.OK);
+				} else {
+					setErrorToResponse(responseData, 102, "Ocurrió un error al eliminar el registro");
+				}
+				connectionCommit(conn);
+			}
+		} catch(SQLException e) {
+			e.printStackTrace();
+			connectionRollback(conn);
+			setSQLExceptionToResponse(responseData, e);
+		} finally {
+			closeConnection(conn);
+		}
+		return responseData;
+	}
+	
+}

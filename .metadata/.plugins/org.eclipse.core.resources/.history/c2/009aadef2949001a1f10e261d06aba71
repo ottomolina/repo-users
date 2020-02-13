@@ -1,0 +1,105 @@
+package com.gsa.dao;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
+
+import com.gsa.orm.GsaOrms.GsaEstado;
+import com.gsa.orm.GsaOrms.GsaTabla;
+
+@Component
+public class TablaDao extends GeneralDao {
+	private final Logger log = Logger.getLogger(TablaDao.class);
+
+	public Integer getNextId(Connection conn) throws SQLException {
+		String sql = "select ifnull(max(gsa_tab_id),0)+1 from " + GsaTabla.TABLENAME;
+		
+		log.debug("getNextId: " + sql);
+		return getOneColumnRow(conn, sql, null, Integer.class);
+	}
+
+	public boolean isDuplicate(Connection conn, GsaTabla orm) throws SQLException {
+		boolean ret = false;
+		String sql = "select count(1) from " + GsaTabla.TABLENAME;
+		sql = sql + " where upper(gsa_tab_nombre) like upper(?)";
+		
+		Object[] param = null;
+		if(orm.getGsa_tab_id() != null) {
+			sql = sql + " and gsa_tab_id != ?";
+			param = new Object[] { orm.getGsa_tab_nombre(), orm.getGsa_tab_id() };
+		} else {
+			param = new Object[] { orm.getGsa_tab_nombre() };
+		}
+		log.debug("isDuplicate: " + sql);
+		if(getOneColumnRow(conn, sql, param, Long.class) > 0) {
+			ret = true;
+		}
+		return ret;
+	}
+	
+	public Integer validIntegrity(Connection conn, GsaTabla orm) throws SQLException {
+		String sql = "select count(1) from " + GsaEstado.TABLENAME;
+		sql = sql + " where gsa_tab_id = ? ";
+		Object[] param = { orm.getGsa_tab_id() };
+
+		log.debug("validIntegrity: " + sql);
+		return getOneColumnRow(conn, sql, param, Long.class);
+	}
+	
+	public Integer insert(Connection conn, GsaTabla orm) throws SQLException {
+		String sql = "insert into " + GsaTabla.TABLENAME;
+		sql = sql + "(gsa_tab_id,gsa_tab_nombre) ";
+		sql = sql + "values(?,?)";
+		
+		log.debug("insertTabla: ".concat(sql));
+		Object[] param = { orm.getGsa_tab_id(), orm.getGsa_tab_nombre() };
+		return insert(conn, sql, param);
+	}
+
+	public List<GsaTabla> select(Connection conn, GsaTabla filtro) throws SQLException {
+		String sql = "select gsa_tab_id,gsa_tab_nombre from " + GsaTabla.TABLENAME;
+		
+		Object[] params = null;
+		if(filtro != null) {
+			List<Object> p = new ArrayList<Object>();
+			String where = "";
+			if(filtro.getGsa_tab_id() != null) {
+				where = where + " gsa_tab_id = ? and ";
+				p.add(filtro.getGsa_tab_id());
+			}
+			if(filtro.getGsa_tab_nombre() != null) {
+				where = where + " upper(gsa_tab_nombre) like upper(?)     ";
+				p.add(filtro.getGsa_tab_id());
+			}
+			if(p.size() != 0) {
+				sql = sql + " where " + where.substring(0, where.length()-5);
+				params = p.toArray();
+			}
+		}
+		return selectStatement(conn, sql, params, GsaTabla.class);
+	}
+	
+	public Integer update(Connection conn, GsaTabla orm) throws SQLException {
+		String sql = "update " + GsaTabla.TABLENAME;
+		sql = sql + " set gsa_tab_nombre = ?";
+		sql = sql + " where gsa_tab_id = ? ";
+		
+		log.debug("updateTabla: " + sql);
+		Object[] param = { orm.getGsa_tab_nombre(), orm.getGsa_tab_id() };
+		return update(conn, sql, param);
+	}
+
+	public Integer delete(Connection conn, GsaTabla orm) throws SQLException {
+		String sql = "delete from " + GsaTabla.TABLENAME;
+		sql = sql + " where gsa_tab_id = ? ";
+		
+		log.debug("deleteTabla: " + sql);
+		Object[] param = { orm.getGsa_tab_id() };
+		return update(conn, sql, param);
+	}
+	
+}

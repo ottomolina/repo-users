@@ -1,0 +1,108 @@
+package com.gsa.dao;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import com.gsa.orm.GsaAplicacion;
+import com.gsa.orm.GsaPermiso;
+
+public class AplicacionDao extends GeneralDao {
+	private final Logger log = Logger.getLogger(AplicacionDao.class);
+	
+	public Integer getNextId(Connection conn) throws SQLException {
+		String sql = "select ifnull(max(gsa_app_id),0)+1 from " + GsaAplicacion.TABLENAME;
+		
+		log.debug("getNextId: " + sql);
+		return getOneColumnRow(conn, sql, null, Integer.class);
+	}
+	
+	public Boolean isDuplicate(Connection conn, GsaAplicacion orm) throws SQLException {
+		String sql = "select count(1) from " + GsaAplicacion.TABLENAME;
+		sql = sql + " where upper(gsa_app_nombre) = upper(?) ";
+		
+		Object[] param = null;
+		if(orm.getGsa_app_id() != null) {
+			sql = sql + " and gsa_app_id != ?";
+			param = new Object[] { orm.getGsa_app_nombre(), orm.getGsa_app_id() };
+		} else {
+			param = new Object[] { orm.getGsa_app_nombre() };
+		}
+		log.debug("isDuplicate: " + sql);
+		if(getOneColumnRow(conn, sql, param, Integer.class) > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public Integer validIntegrity(Connection conn, GsaAplicacion orm) throws SQLException {
+		String sql = "select count(1) from " + GsaPermiso.TABLENAME;
+		sql = sql + " where gsa_app_id = ? ";
+		Object[] param = { orm.getGsa_app_id() };
+
+		log.debug("validIntegrity: " + sql);
+		return getOneColumnRow(conn, sql, param, Integer.class);
+	}
+	
+	public Integer insertAplicacion(Connection conn, GsaAplicacion orm) throws SQLException {
+		String sql = "insert into " + GsaAplicacion.TABLENAME;
+		sql = sql + "(gsa_app_id, gsa_app_nombre, gsa_est_id) ";
+		sql = sql + "values(?,?,?)";
+		
+		log.debug("insertAplicacion: ".concat(sql));
+		Object[] param = { orm.getGsa_app_id(), orm.getGsa_app_nombre(), orm.getGsa_est_id() };
+		return insert(conn, sql, param);
+	}
+	
+	public List<GsaAplicacion> getListAplicacion(Connection conn, GsaAplicacion filtro) throws SQLException {
+		String sql = "select gsa_app_id, gsa_app_nombre, gsa_est_id from " + GsaAplicacion.TABLENAME;
+		
+		Object[] params = null;
+		if(filtro != null) {
+			List<Object> p = new ArrayList<Object>();
+			String where = "";
+			if(filtro.getGsa_app_id() != null) {
+				where = where + " gsa_app_id = ? and ";
+				p.add(filtro.getGsa_app_id());
+			}
+			if(filtro.getGsa_app_nombre() != null) {
+				where = where + " upper(gsa_app_nombre) = upper(?) and ";
+				p.add(filtro.getGsa_app_nombre());
+			}
+			if(filtro.getGsa_est_id() != null) {
+				where = where + " gsa_est_id = ?     ";
+				p.add(filtro.getGsa_est_id());
+			}
+			if(p.size() != 0) {
+				sql = sql + " where " + where.substring(0, where.length()-5);
+				params = p.toArray();
+			}
+		}
+		log.debug("getListAplicacion: " + sql);
+		return selectStatement(conn, sql, params, GsaAplicacion.class);
+	}
+	
+	public Integer updateAplicacion(Connection conn, GsaAplicacion orm) throws SQLException {
+		String sql = "update " + GsaAplicacion.TABLENAME;
+		sql = sql + " set gsa_app_nombre = ?, gsa_est_id = ?";
+		sql = sql + " where gsa_app_id = ? ";
+		
+		log.debug("updateAplicacion: " + sql);
+		Object[] param = { orm.getGsa_app_nombre(), orm.getGsa_est_id(), orm.getGsa_app_id() };
+		return update(conn, sql, param);
+	}
+	
+	public Integer deleteAplicacion(Connection conn, GsaAplicacion orm) throws SQLException {
+		String sql = "delete from " + GsaAplicacion.TABLENAME;
+		sql = sql + " where gsa_app_id = ?";
+		
+		log.debug("deleteAplicacion: " + sql);
+		Object[] param = { orm.getGsa_app_id() };
+		return update(conn, sql, param);
+	}
+	
+}

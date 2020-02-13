@@ -1,0 +1,5 @@
+package com.gsa.ctrl;
+
+public class EstadoServiceCtrl extends BaseCtrl {
+
+}

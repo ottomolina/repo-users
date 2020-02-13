@@ -1,0 +1,16 @@
+package com.gsa.interfaces;
+
+import com.gsa.data.RequestData;
+import com.gsa.data.ResponseData;
+
+public interface ITablaService {
+	
+	public ResponseData save(RequestData request);
+	
+	public ResponseData getInfo(RequestData request);
+	
+	public ResponseData update(RequestData request);
+	
+	public ResponseData delete(RequestData request);
+	
+}

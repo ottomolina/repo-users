@@ -1,0 +1,33 @@
+package com.gsa.service;
+
+import com.gsa.data.RequestData;
+import com.gsa.data.ResponseData;
+import com.gsa.interfaces.IService;
+
+public class AplicacionServiceImpl implements IService {
+
+	@Override
+	public ResponseData save(RequestData request) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ResponseData getInfo(RequestData request) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ResponseData update(RequestData request) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ResponseData delete(RequestData request) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

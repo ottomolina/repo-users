@@ -1,0 +1,48 @@
+package com.gsa.endpoint;
+
+import javax.ws.rs.Consumes;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.gsa.ctrl.TablaServiceCtrl;
+import com.gsa.data.RequestData;
+import com.gsa.data.ResponseData;
+import com.gsa.interfaces.ITablaService;
+
+@RestController
+@RequestMapping(value = "/gsa-backend/rest/api")
+@Consumes("application/json")
+public class TablaServiceImpl implements ITablaService {
+	@Autowired
+	private TablaServiceCtrl service;
+
+	@Override
+	@RequestMapping(value="/saveTabla", method=RequestMethod.POST)
+	public ResponseData saveTabla(@RequestBody RequestData request) {
+//		service = new TablaServiceCtrl();
+		return service.saveTabla(request);
+	}
+
+	@Override
+	@RequestMapping(value="/getInfoTabla", method=RequestMethod.POST)
+	public ResponseData getInfoTabla(@RequestBody RequestData request) {
+		return null;
+	}
+
+	@Override
+	@RequestMapping(value="/updateTabla", method=RequestMethod.POST)
+	public ResponseData updateTabla(@RequestBody RequestData request) {
+		return null;
+	}
+
+	@Override
+	@RequestMapping(value="/deleteTabla", method=RequestMethod.POST)
+	public ResponseData removeTabla(@RequestBody RequestData request) {
+		return null;
+	}
+
+}
