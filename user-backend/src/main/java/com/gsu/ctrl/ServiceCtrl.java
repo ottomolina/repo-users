@@ -68,4 +68,5 @@ public class ServiceCtrl {
 		data.getListError().add(new Error(code, error));
 		data.setResult(Util.ERROR);
 	}
+	
 }

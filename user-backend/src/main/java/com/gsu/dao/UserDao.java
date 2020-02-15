@@ -78,10 +78,10 @@ public class UserDao extends GeneralDao {
 				where = where + " GSU_USR_LOGIN=? and";
 				p.add(filter.getGsu_usr_login());
 			}
-//			if(filter.getGsu_usr_password() != null || !"".equals(filter.getGsu_usr_password())) {
-//				where = where + " GSU_USR_PASSWORD=? and";
-//				p.add(filter.getGsu_usr_password());
-//			}
+			if(filter.getGsu_usr_password() != null || !"".equals(filter.getGsu_usr_password())) {
+				where = where + " GSU_USR_PASSWORD=? and";
+				p.add(filter.getGsu_usr_password());
+			}
 			if(filter.getGsu_usr_email() != null || !"".equals(filter.getGsu_usr_email())) {
 				where = where + " GSU_USR_EMAIL=? and";
 				p.add(filter.getGsu_usr_email());
